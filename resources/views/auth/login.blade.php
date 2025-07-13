@@ -28,7 +28,7 @@
                             class="form-control @error('email') is-invalid @enderror" 
                             id="email" 
                             name="email" 
-                            value="{{ old('email') }}" 
+                            value="{{ old('email') ?? session('remember_email') }}" 
                             required 
                             autofocus
                         >
@@ -56,7 +56,7 @@
                                 class="form-check-input" 
                                 id="remember" 
                                 name="remember" 
-                                {{ old('remember') ? 'checked' : '' }}
+                                {{ (old('remember') || session('remember_checked')) ? 'checked' : '' }}
                             >
                             <label class="form-check-label" for="remember">Remember Me</label>
                         </div>

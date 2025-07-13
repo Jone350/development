@@ -40,7 +40,7 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 # Middleware group for authenticated users
-Route::group(['middleware' => 'auth', 'session.timeout'], function () {
+Route::group(['middleware' => ['auth', 'session.timeout']], function () {
     Route::post('/logout', [UserController::class, 'logout'])
         ->name('logout');
 

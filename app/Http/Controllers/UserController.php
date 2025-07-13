@@ -78,7 +78,12 @@ class UserController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $remember = $request->has('remember'); // true if checkbox is checked
+
+        if (Auth::attempt($credentials, $remember)) {
+            session(['remember_checked' => true]);
+            session(['remember_email' => $request->email]);
+
             $request->session()->regenerate();
             return redirect()->intended('home');
         }
@@ -90,10 +95,18 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
+        // Before invalidate
+        $email = session('remember_email');
+        $checked = session('remember_checked');
+
         Auth::logout();
 
         $request->session()->invalidate(); // Clear session data
         $request->session()->regenerateToken(); // Prevent CSRF reuse
+
+        // Re-store email/checkbox
+        session(['remember_email' => $email]);
+        session(['remember_checked' => $checked]);
 
         return redirect('/login')->with('status', 'You have been logged out.');
     }
